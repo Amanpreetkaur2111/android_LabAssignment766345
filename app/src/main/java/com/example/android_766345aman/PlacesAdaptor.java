@@ -1,6 +1,7 @@
 package com.example.android_766345aman;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +49,8 @@ public class PlacesAdaptor extends ArrayAdapter {
         final ClassOfPlaces list = listPlace.get(position);
         tvname.setText(list.getNameoffavrtplace());
         tvaddress.setText(list.getAddress());
-        tvlatitude.setText(list.getLatitude());
-        tvlongitude.setText(list.getLongitude());
+        //tvlatitude.setText(list.getLatitude());
+        //tvlongitude.setText(list.getLongitude());
         tvdate.setText(list.getDate());
 
         view.findViewById(R.id.btn_edit).setOnClickListener(new View.OnClickListener() {
@@ -69,6 +70,27 @@ public class PlacesAdaptor extends ArrayAdapter {
         return view;
 
     }
+
+//    private void loadPlaces(){
+//
+//        String sql = "SELECT * FROM places";
+//        Cursor c = mDatabase.getAllPlaces();
+//        listPlace.clear();
+//        if (c.moveToFirst()){
+//
+//            do{
+//
+//                listPlace.add(new ClassOfPlaces(c.getInt(0),c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5)));
+//            }while (c.moveToNext());
+//            c.close();
+//
+//
+//
+//        }
+//        notifyDataSetChanged();
+//
+//    }
+//
 
 
 }

@@ -33,11 +33,12 @@ public class DBofFavrtPlaces extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sql = "CREATE TABLE " + TABLE_NAME + "(" +
                 COLUMN_ID + " INTEGER NOT NULL CONSTRAINT employee_pk PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_ADDRESS + " varchar(200) NOT NULL,"+
-                COLUMN_NAME + " varchar(200) NOT NULL, " +
-                COLUMN_LATITUDE + " varchar(200) NOT NULL, " +
-                COLUMN_LONGITUDE + " varchar(200) NOT NULL, "+
-                COLUMN_DATE + " varchar(200) NOT NULL); ";
+                COLUMN_NAME + " varchar(200) NOT NULL,"+
+                COLUMN_ADDRESS + " varchar(200) , " +
+                COLUMN_DATE + " varchar(200) NOT NULL," +
+                COLUMN_LATITUDE + " double NOT NULL, " +
+                COLUMN_LONGITUDE + " double NOT NULL);";
+
 
         db.execSQL(sql);
 
@@ -51,7 +52,7 @@ public class DBofFavrtPlaces extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    boolean addFavrtPlaces(String address, String nameoffavrtplace, String latitude, String longitude, String date) {
+    boolean addFavrtPlaces( String nameoffavrtplace,String date,String address, double latitude, double longitude) {
 
         //inorder to insert ,we need writable database;
         //this method returns a sqlite instance;
@@ -63,7 +64,7 @@ public class DBofFavrtPlaces extends SQLiteOpenHelper {
 
         cv.put(COLUMN_NAME,nameoffavrtplace);
         cv.put(COLUMN_ADDRESS,address);
-        cv.put(COLUMN_DATE,latitude);
+        cv.put(COLUMN_LATITUDE,latitude);
         cv.put(COLUMN_LONGITUDE,longitude);
         cv.put(COLUMN_DATE,date);
 
@@ -78,18 +79,18 @@ public class DBofFavrtPlaces extends SQLiteOpenHelper {
         return sqLiteDatabase.rawQuery("SELECT * FROM "+TABLE_NAME,null);
 
     }
-    boolean updatePlaces(int id,String address, String nameoffavrtplace, String latitude, String longitude, String date){
+    boolean updatePlaces(int id,String address, String nameoffavrtplace, double latitude, double longitude){
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
         //this first argument of the put method is the columnn name and second value
 
-        cv.put(COLUMN_NAME,nameoffavrtplace);
+
         cv.put(COLUMN_NAME,nameoffavrtplace);
         cv.put(COLUMN_ADDRESS,address);
-        cv.put(COLUMN_DATE,latitude);
+        cv.put(COLUMN_LATITUDE,latitude);
         cv.put(COLUMN_LONGITUDE,longitude);
-        cv.put(COLUMN_DATE,date);
+
 
 
         //returns the affected num of rows;

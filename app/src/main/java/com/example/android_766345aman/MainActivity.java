@@ -8,10 +8,13 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -33,6 +36,11 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -41,8 +49,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private final int REQUEST_CODE = 1;
 
-
     DBofFavrtPlaces mDatabase;
+    Geocoder  gcode;
+    String address;
+    Location location;
+    List<Address> addresses;
+
+
 
     // get user location
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -98,6 +111,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     latitude = userLocation.latitude;
                     longitude = userLocation.longitude;
 
+
+
+
+
+
                     CameraPosition cameraPosition = CameraPosition.builder()
                             .target(userLocation)
                             .zoom(15)
@@ -107,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     mMap.addMarker(new MarkerOptions().position(userLocation)
                             .title("your location"));
+                  // mDatabase.addFavrtPlaces()
                     //.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.icon_loc)));
                 }
             }
@@ -150,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                Location location = new Location("your destination");
+                location = new Location("your destination");
                 location.setLatitude(latLng.latitude);
                 location.setLongitude(latLng.longitude);
 
@@ -158,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 dest_lng = latLng.longitude;
 
                 setMarker(location);
+                addressOfPlaces(location);
 
             }
         });
@@ -176,6 +196,39 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+
+    }
+
+
+    private void addressOfPlaces(Location location){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        String addDate = simpleDateFormat.format(calendar.getTime());
+        gcode = new Geocoder(this, Locale.getDefault());
+        try{
+               addresses = gcode.getFromLocation(location.getLatitude(), location.getLongitude(),1);
+               if(!addresses.isEmpty()){
+                   address = addresses.get(0).getLocality() + " " + addresses.get(0).getAddressLine(0);
+                   System.out.println(addresses.get(0).getAddressLine(0));
+
+
+                   if (mDatabase.addFavrtPlaces(addresses.get(0).getLocality(),addDate,addresses.get(0).getAddressLine(0),location.getLatitude(),location.getLongitude())){
+
+                       Toast.makeText(MainActivity.this, "places:"+addresses.get(0).getAddressLine(0), Toast.LENGTH_SHORT).show();
+                   }else {
+
+                       Toast.makeText(MainActivity.this, "places NOT FOUND:", Toast.LENGTH_SHORT).show();
+
+                   }
+               }
+
+
+
+
+        }catch (IOException e){
+            e.printStackTrace();
+
+        }
 
     }
 
@@ -211,14 +264,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
 
             case R.id.btn_cafe:
-                url = getUrl(latitude, longitude, "cafe");
+               // url = getUrl(latitude, longitude, "cafe");
                // dataTransfer = new Object[2];
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
+               // dataTransfer[0] = mMap;
+               // dataTransfer[1] = url;
 
-                getNearbyPlaceData.execute(dataTransfer);
-                Toast.makeText(this, "Cafe", Toast.LENGTH_SHORT).show();
-                break;
+               // getNearbyPlaceData.execute(dataTransfer);
+               // Toast.makeText(this, "Cafe", Toast.LENGTH_SHORT).show();
+
+
+                Intent intent = new Intent(this,List0fFavtPlaces.class);
+                startActivity(intent);
+
+
+
+
+
+               // break;
+
+
 
 
 

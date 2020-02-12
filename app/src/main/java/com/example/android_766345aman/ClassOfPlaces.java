@@ -3,14 +3,15 @@ package com.example.android_766345aman;
 public class ClassOfPlaces {
 
 int id ;
- String address,nameoffavrtplace,longitude,latitude,date;
+ String address,nameoffavrtplace,date;
+ Double latitude,longitude;
 
-    public ClassOfPlaces(int id, String address, String nameoffavrtplace, String longitude, String latitude, String date) {
+    public ClassOfPlaces(int id, String address, String nameoffavrtplace, Double longitude, Double latitude, String date) {
         this.id = id;
         this.address = address;
         this.nameoffavrtplace = nameoffavrtplace;
-        this.longitude = longitude;
         this.latitude = latitude;
+        this.longitude = longitude;
         this.date = date;
     }
 
@@ -26,11 +27,11 @@ int id ;
         return nameoffavrtplace;
     }
 
-    public String getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 

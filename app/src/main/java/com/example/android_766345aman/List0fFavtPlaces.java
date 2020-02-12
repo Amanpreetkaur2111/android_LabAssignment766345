@@ -23,6 +23,11 @@ public class List0fFavtPlaces extends AppCompatActivity {
         listPlace = new ArrayList<>();
         mDatabase = new DBofFavrtPlaces(this);
         loadPlaces();
+
+
+        PlacesAdaptor placesAdaptor = new PlacesAdaptor(this,R.layout.list_layout_favrtplaces,listPlace,mDatabase);
+        listView.setAdapter(placesAdaptor);
+
     }
 
 
@@ -37,8 +42,8 @@ public class List0fFavtPlaces extends AppCompatActivity {
 
                 listPlace.add(new ClassOfPlaces(cursor.getInt(0),
                         cursor.getString(1),cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),cursor.getString(5)
+                        cursor.getDouble(3),
+                        cursor.getDouble(4),cursor.getString(5)
                         ));
 
             }while (cursor.moveToNext());
@@ -48,10 +53,9 @@ public class List0fFavtPlaces extends AppCompatActivity {
 
 
         // Custom Adaptor
-
+//        PlacesAdaptor placesAdaptor = new PlacesAdaptor(this,R.layout.list_layout_favrtplaces,listPlace,mDatabase);
+//        listView.setAdapter(placesAdaptor);
 
     }
-
-
 
 }
