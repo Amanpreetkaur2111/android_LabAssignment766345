@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private final int REQUEST_CODE = 1;
 
+
+    DBofFavrtPlaces mDatabase;
+
     // get user location
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             requestPermission();
         else
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+
+
+        mDatabase = new DBofFavrtPlaces(this);
     }
 
 
@@ -150,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 dest_lat = latLng.latitude;
                 dest_lng = latLng.longitude;
+
                 setMarker(location);
 
             }
@@ -194,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
 
             case R.id.btn_museum:
-                url = getUrl(latitude, longitude, "museum ");
+                url = getUrl(latitude, longitude, "museum");
 
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
@@ -204,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
 
             case R.id.btn_cafe:
-                url = getUrl(latitude, longitude, "cafe ");
+                url = getUrl(latitude, longitude, "cafe");
                // dataTransfer = new Object[2];
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
@@ -225,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         directionUrl.append("origin="+ latitude+","+longitude);
         directionUrl.append("&destination="+dest_lat+","+dest_lng);
         directionUrl.append("&key=");
+
         return directionUrl.toString();
 
 
@@ -236,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         placeUrl.append("&radius="+RADIUS);
         placeUrl.append("&type="+nearbyPlace);
         placeUrl.append("&key=AIzaSyDjxAVT7FnqkR8vyPxMIwzRSVoQHDtOab4");
+        System.out.println(placeUrl.toString());
         return placeUrl.toString();
     }
 }

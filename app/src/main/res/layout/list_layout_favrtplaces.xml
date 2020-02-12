@@ -19,14 +19,27 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_department"
+            android:id="@+id/tv_address"
             android:layout_marginBottom="5dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_salary"
+            android:id="@+id/tv_latitude"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_longitude"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_date"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+
 
 
 
