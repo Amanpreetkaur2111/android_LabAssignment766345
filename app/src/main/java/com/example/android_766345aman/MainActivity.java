@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String address;
     Location location;
     List<Address> addresses;
-    //Spinner maptype;
+    Spinner maptype;
 
 
 
@@ -77,12 +78,51 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
         initMap();
         getUserLocation();
+        maptype = findViewById(R.id.choosethemap);
 
-        if (!checkPermission())
+        maptype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position){
+
+                    case 0:
+                        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                        Toast.makeText(MainActivity.this, "Satellite Map Selected", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case 1:
+                        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                        Toast.makeText(MainActivity.this, "Hybrid Map Selected", Toast.LENGTH_SHORT).show();
+                       break;
+
+                    case 2:
+                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        Toast.makeText(MainActivity.this, "Normal Map Selected", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    default:
+
+                      break;
+
+
+
+
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        if (!checkPermission()) {
             requestPermission();
-        else
+        }
+        else {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-
+        }
 
         mDatabase = new DBofFavrtPlaces(this);
     }
@@ -138,34 +178,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-
-            case R.id.satellite:
-                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                Toast.makeText(this, "Satellite Map Selected", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.hybrid:
-                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                Toast.makeText(this, "Hybrid Map Selected", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.normal:
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                Toast.makeText(this, "Normal Map Selected", Toast.LENGTH_SHORT).show();
-                return true;
-
-                default:
-                    return super.onOptionsItemSelected(item);
-
-
-
-
-
-        }
-    }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
