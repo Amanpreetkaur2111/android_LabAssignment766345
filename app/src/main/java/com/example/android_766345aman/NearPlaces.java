@@ -40,6 +40,8 @@ public class NearPlaces extends AsyncTask<Object,String,String > {
         DataParser dataParser = new DataParser();
         placeList = dataParser.parse(s);
 
+        showNearByPlaces(placeList);
+
     }
 
 

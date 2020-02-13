@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Android_766345Aman</string>
     <string name="key">AIzaSyBogifPj3N72HfE67N-RwF1IYIKqJzwqt8</string>
+<string-array name="typesofmaps">
+    <item>Choose Map Type</item>
+    <item>Satellite</item>
+    <item>Hybrid</item>
+    <item>Default</item>
 
+</string-array>
 
 </resources>

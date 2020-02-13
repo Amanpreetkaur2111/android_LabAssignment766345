@@ -18,7 +18,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String address;
     Location location;
     List<Address> addresses;
+    //Spinner maptype;
 
 
 
@@ -83,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mDatabase = new DBofFavrtPlaces(this);
     }
+
+
 
 
     private void initMap() {
@@ -133,6 +138,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+
+            case R.id.satellite:
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                Toast.makeText(this, "Satellite Map Selected", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.hybrid:
+                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                Toast.makeText(this, "Hybrid Map Selected", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.normal:
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                Toast.makeText(this, "Normal Map Selected", Toast.LENGTH_SHORT).show();
+                return true;
+
+                default:
+                    return super.onOptionsItemSelected(item);
+
+
+
+
+
+        }
+    }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
@@ -165,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+       // mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -263,7 +296,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(this, "Museum", Toast.LENGTH_SHORT).show();
                 break;
 
-            case R.id.btn_cafe:
+
+                case R.id.btn_cafe:
                // url = getUrl(latitude, longitude, "cafe");
                // dataTransfer = new Object[2];
                // dataTransfer[0] = mMap;
@@ -295,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         StringBuilder directionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         directionUrl.append("origin="+ latitude+","+longitude);
         directionUrl.append("&destination="+dest_lat+","+dest_lng);
-        directionUrl.append("&key=");
+        directionUrl.append("&key=AIzaSyB45lwuNXNnXYsc3WHA1QyJKIkxqE-Rb7A");
 
         return directionUrl.toString();
 
@@ -307,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         placeUrl.append("location="+latitude+","+longitude);
         placeUrl.append("&radius="+RADIUS);
         placeUrl.append("&type="+nearbyPlace);
-        placeUrl.append("&key=AIzaSyDjxAVT7FnqkR8vyPxMIwzRSVoQHDtOab4");
+        placeUrl.append("&key=AIzaSyB45lwuNXNnXYsc3WHA1QyJKIkxqE-Rb7A");
         System.out.println(placeUrl.toString());
         return placeUrl.toString();
     }
