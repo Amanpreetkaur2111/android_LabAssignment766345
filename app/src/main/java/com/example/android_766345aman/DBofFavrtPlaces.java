@@ -33,7 +33,7 @@ public class DBofFavrtPlaces extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sql = "CREATE TABLE " + TABLE_NAME + "(" +
                 COLUMN_ID + " INTEGER NOT NULL CONSTRAINT employee_pk PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_NAME + " varchar(200) NOT NULL,"+
+                COLUMN_NAME + " varchar(200),"+
                 COLUMN_ADDRESS + " varchar(200) , " +
                 COLUMN_DATE + " varchar(200) NOT NULL," +
                 COLUMN_LATITUDE + " double NOT NULL, " +

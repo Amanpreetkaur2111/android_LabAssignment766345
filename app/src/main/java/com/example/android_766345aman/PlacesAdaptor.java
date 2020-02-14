@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class PlacesAdaptor extends ArrayAdapter {
@@ -43,15 +45,17 @@ public class PlacesAdaptor extends ArrayAdapter {
         TextView tvlatitude = view.findViewById(R.id.tv_latitude);
         TextView tvdate = view.findViewById(R.id.tv_date);
 
-
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        String addDate = simpleDateFormat.format(calendar.getTime());
 
 
         final ClassOfPlaces list = listPlace.get(position);
-        tvname.setText(list.getNameoffavrtplace());
+        tvname.setText(list.getDate());
         tvaddress.setText(list.getAddress());
         //tvlatitude.setText(list.getLatitude());
         //tvlongitude.setText(list.getLongitude());
-        tvdate.setText(list.getDate());
+        tvdate.setText(addDate);
 
         view.findViewById(R.id.btn_edit).setOnClickListener(new View.OnClickListener() {
             @Override

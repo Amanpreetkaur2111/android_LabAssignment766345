@@ -20,8 +20,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -48,29 +46,28 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class AddActivity extends AppCompatActivity implements OnMapReadyCallback {
+
 
     GoogleMap mMap;
 
     private final int REQUEST_CODE = 1;
 
     DBofFavrtPlaces mDatabase;
-    Geocoder  gcode;
+    Geocoder gcode;
     String address;
-//    Location location;
+    //    Location location;
     List<Address> addresses;
     Spinner maptype;
     boolean onMarkerClick = false;
-
 
 
     // get user location
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
     LocationRequest locationRequest;
-
+     Double  dest_lat,dest_lng;
 
     // latitude, longitude
 //    double latitude, longitude;
@@ -82,53 +79,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_add);
         initMap();
         getUserLocation();
-        maptype = findViewById(R.id.choosethemap);
+        setHomeMarker();
 
-        maptype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
-
-                    case 0:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        Toast.makeText(MainActivity.this, "Normal Map Selected", Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case 1:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                        Toast.makeText(MainActivity.this, "Hybrid Map Selected", Toast.LENGTH_SHORT).show();
-                       break;
-
-                    case 2:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        Toast.makeText(MainActivity.this, "Normal  Map Selected", Toast.LENGTH_SHORT).show();
-                        break;
-
-                        case 3:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                        Toast.makeText(MainActivity.this, "Terrain Map Selected", Toast.LENGTH_SHORT).show();
-                    break;
-
-                    case 4:
-                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                    Toast.makeText(MainActivity.this, "Satellite Map Selected", Toast.LENGTH_SHORT).show();
-                    break;
-
-                    default:
-
-                      break;
-
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        mDatabase = new DBofFavrtPlaces(this);
 
         if (!checkPermission()) {
             requestPermission();
@@ -145,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.addmap);
         mapFragment.getMapAsync(this);
     }
 
@@ -177,8 +133,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     mMap.addMarker(new MarkerOptions().position(userLocation)
                             .title("your location"));
-                  // mDatabase.addFavrtPlaces()
-                    // .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.icon_loc)));
+                    // mDatabase.addFavrtPlaces()
+                    //.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.icon_loc)));
                 }
             }
         };
@@ -217,24 +173,60 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        // mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
+                builder.setMessage("Do you want to add the place in Favourites");
+                builder.setCancelable(true);
+
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        onMarkerClick = true;
+
+                        addressOfFavouritePlaces(customMarker);
+
+
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        onMarkerClick = false;
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
+            }
+        });
+
+
 
 
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-//                location = new Location("your destination");
-//                location.setLatitude(latLng.latitude);
-//                location.setLongitude(latLng.longitude);
+               Location location = new Location("your destination");
+                location.setLatitude(latLng.latitude);
+                location.setLongitude(latLng.longitude);
 
-//                dest_lat = latLng.latitude;
-//                dest_lng = latLng.longitude;
+                dest_lat = latLng.latitude;
+                dest_lng = latLng.longitude;
 
                 customMarker = latLng;
                 setMarker(latLng);
 
 
-                addressOfPlaces(customMarker);
+                addressOfFavouritePlaces(customMarker);
             }
         });
 
@@ -245,37 +237,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void setMarker(LatLng latLng){
-   // LatLng userLatlng = new LatLng(location.getLatitude(),location.getLongitude());
+//        LatLng userLatlng = new LatLng(location.getLatitude(),location.getLongitude());
 
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(address)
-                .snippet("you are going there").draggable(false).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                .snippet("you are going there").draggable(false).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mMap.addMarker(markerOptions);
 
 
     }
 
 
-    private void addressOfPlaces(LatLng latLng){
+    private void addressOfFavouritePlaces(LatLng latLng){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         String addDate = simpleDateFormat.format(calendar.getTime());
         gcode = new Geocoder(this, Locale.getDefault());
         try{
-               addresses = gcode.getFromLocation(latLng.latitude, latLng.longitude,1);
-               if(!addresses.isEmpty()){
-                   address = addresses.get(0).getLocality() + " " + addresses.get(0).getAddressLine(0);
-                   System.out.println(addresses.get(0).getAddressLine(0));
+            addresses = gcode.getFromLocation(latLng.latitude, latLng.longitude,1);
+            if(!addresses.isEmpty()){
+                address = addresses.get(0).getLocality() + " " + addresses.get(0).getAddressLine(0);
+                System.out.println(addresses.get(0).getAddressLine(0));
 
 
-                   if (mDatabase.addFavrtPlaces(addresses.get(0).getLocality(),addDate,addresses.get(0).getAddressLine(0),latLng.latitude,latLng.longitude)){
+                 if (onMarkerClick && mDatabase.addFavrtPlaces(addresses.get(0).getLocality(),addDate,addresses.get(0).getAddressLine(0),latLng.latitude,latLng.longitude)){
 
-                       Toast.makeText(MainActivity.this, "places:"+addresses.get(0).getAddressLine(0), Toast.LENGTH_SHORT).show();
-                   }else {
+                     onMarkerClick = false;
+                    Toast.makeText(AddActivity.this, "places:"+addresses.get(0).getAddressLine(0), Toast.LENGTH_SHORT).show();
+                }else {
 
-                       Toast.makeText(MainActivity.this, "places NOT FOUND:", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddActivity.this, "places NOT FOUND:", Toast.LENGTH_SHORT).show();
 
-                   }
-               }
+                }
+            }
 
 
 
@@ -288,94 +281,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     public void btnClick(View view) {
 
 
-        Object[] dataTransfer = new Object[2];;
-        String url;
-        NearPlaces getNearbyPlaceData = new NearPlaces();
 
-        switch (view.getId()) {
-            case R.id.btn_restaurant:
-                // get the url from place api
-                url = getUrl(currentLocation.latitude, currentLocation.longitude,"restaurant");
-
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-
-                getNearbyPlaceData.execute(dataTransfer);
-                Toast.makeText(this, "Restaurants", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.btn_museum:
-                url = getUrl(currentLocation.latitude, currentLocation.longitude, "museum");
-
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-
-                getNearbyPlaceData.execute(dataTransfer);
-                Toast.makeText(this, "Museum", Toast.LENGTH_SHORT).show();
-                break;
+        Intent intent = new Intent(this,List0fFavtPlaces.class);
+        startActivity(intent);
 
 
 
-            case R.id.btn_direction:
-                dataTransfer = new Object[4];
-                url = getDirectionUrl();
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-                dataTransfer[2] = customMarker;
-                dataTransfer[3] = new LatLng(currentLocation.latitude,currentLocation.longitude);
-                FetchDirectionData getDirectionsData = new FetchDirectionData();
-                // execute asynchronously
-                getDirectionsData.execute(dataTransfer);
-                break;
-
-
-
-                case R.id.btn_cafe:
-                url = getUrl(currentLocation.latitude, currentLocation.longitude, "cafe");
-                dataTransfer = new Object[2];
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-
-                getNearbyPlaceData.execute(dataTransfer);
-                Toast.makeText(this, "Cafe", Toast.LENGTH_SHORT).show();
-
-
-                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-            break;
-
-            case R.id.btn_addfavrt:
-                Intent intent2 = new Intent(this,AddActivity.class);
-                startActivity(intent2);
-                break;
-
-
-
-        }
-    }
-
-
-    private String getDirectionUrl() {
-        StringBuilder googleDirectionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-        googleDirectionUrl.append("origin="+currentLocation.latitude+","+currentLocation.longitude);
-        googleDirectionUrl.append("&destination="+customMarker.latitude+","+customMarker.longitude);
-        googleDirectionUrl.append("&key="+getString(R.string.api_key_places));
-        Log.d("", "getDirectionUrl: "+googleDirectionUrl);
-        return googleDirectionUrl.toString();
-    }
-
-
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
-        StringBuilder placeUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        placeUrl.append("location="+latitude+","+longitude);
-        placeUrl.append("&radius="+RADIUS);
-        placeUrl.append("&type="+nearbyPlace);
-        placeUrl.append("&key=AIzaSyB45lwuNXNnXYsc3WHA1QyJKIkxqE-Rb7A");
-        System.out.println(placeUrl.toString());
-        return placeUrl.toString();
     }
 }
-

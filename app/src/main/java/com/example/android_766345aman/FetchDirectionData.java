@@ -55,6 +55,7 @@ public class FetchDirectionData extends AsyncTask<Object,String,String> {
 
         mMap.clear();
         // we create marker options
+        System.out.println("snippet");
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
                 .draggable(false)
@@ -66,7 +67,7 @@ public class FetchDirectionData extends AsyncTask<Object,String,String> {
         MarkerOptions markerOptions2 = new MarkerOptions()
                 .position(userL)
                 .draggable(false)
-                .title("Duration : " + duration).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .title("Duration : " + duration).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 .snippet("Distance : " + distance);
         mMap.addMarker(markerOptions2);
 

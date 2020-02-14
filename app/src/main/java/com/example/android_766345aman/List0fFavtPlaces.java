@@ -40,10 +40,9 @@ public class List0fFavtPlaces extends AppCompatActivity {
             do{
 
 
-                listPlace.add(new ClassOfPlaces(cursor.getInt(0),
-                        cursor.getString(1),cursor.getString(2),
-                        cursor.getDouble(3),
-                        cursor.getDouble(4),cursor.getString(5)
+                listPlace.add(new ClassOfPlaces(cursor.getString(0),cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getDouble(3),cursor.getDouble(4)
                         ));
 
             }while (cursor.moveToNext());

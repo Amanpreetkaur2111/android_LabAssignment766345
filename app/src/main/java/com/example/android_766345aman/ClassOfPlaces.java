@@ -6,10 +6,9 @@ int id ;
  String address,nameoffavrtplace,date;
  Double latitude,longitude;
 
-    public ClassOfPlaces(int id, String address, String nameoffavrtplace, Double longitude, Double latitude, String date) {
-        this.id = id;
-        this.address = address;
+    public ClassOfPlaces( String nameoffavrtplace,String date,String address,Double longitude,Double latitude) {
         this.nameoffavrtplace = nameoffavrtplace;
+        this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
