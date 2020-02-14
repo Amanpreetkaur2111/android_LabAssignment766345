@@ -391,7 +391,7 @@ double  dest_lat,dest_lng,lat,lng;
                 dataTransfer[1] = url;
                 dataTransfer[2] = customMarker;
                 dataTransfer[3] = new LatLng(currentLocation.latitude,currentLocation.longitude);
-                FetchDirectionData getDirectionsData = new FetchDirectionData();
+                FetchDirectionData getDirectionsData = new FetchDirectionData(this);
                 // execute asynchronously
                 getDirectionsData.execute(dataTransfer);
                 break;

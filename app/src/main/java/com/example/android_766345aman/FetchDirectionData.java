@@ -1,8 +1,10 @@
 package com.example.android_766345aman;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -19,11 +21,16 @@ public class FetchDirectionData extends AsyncTask<Object,String,String> {
     String googleDirectionsData;
     GoogleMap mMap;
     String url;
+    Context context;
 
     String distance;
     String duration;
 
     LatLng latLng, userL;
+
+    public FetchDirectionData(Context context) {
+        this.context = context;
+    }
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -69,6 +76,8 @@ public class FetchDirectionData extends AsyncTask<Object,String,String> {
                 .draggable(false)
                 .title("Duration : " + duration).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 .snippet("Distance : " + distance);
+        Toast.makeText(context, "Duration :  + "+duration + "Distance:  "+distance , Toast.LENGTH_SHORT).show();
+
         mMap.addMarker(markerOptions2);
 
         /*---------------------------------*/
