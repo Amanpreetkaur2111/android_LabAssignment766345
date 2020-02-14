@@ -25,7 +25,7 @@ public class NearPlaces extends AsyncTask<Object,String,String > {
 
         FetchUrl url = new FetchUrl();
         try {
-            place_data = url.ReadUrl(url_location);
+            place_data = url.readUrl(url_location);
         } catch (IOException e) {
             e.printStackTrace();
         }

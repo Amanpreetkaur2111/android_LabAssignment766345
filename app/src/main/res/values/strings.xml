@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Android_766345Aman</string>
-    <string name="key">AIzaSyBogifPj3N72HfE67N-RwF1IYIKqJzwqt8</string>
+    <string name="key">AIzaSyB45lwuNXNnXYsc3WHA1QyJKIkxqE-Rb7A</string>
+    <string name="api_key_places">AIzaSyB45lwuNXNnXYsc3WHA1QyJKIkxqE-Rb7A</string>
+
 <string-array name="typesofmaps">
     <item>Choose Map Type</item>
     <item>Satellite</item>

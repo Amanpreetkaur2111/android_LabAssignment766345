@@ -10,79 +10,133 @@ import java.util.List;
 
 public class DataParser {
 
-    public HashMap<String ,String> nearPlace(JSONObject object){
-
-        HashMap<String,String> place = new HashMap<>();
-
-        String nameOfPlace = "-NA-";
-        String vicinity =  "-NA-";
+    private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
+        HashMap<String, String> googlePlaceMap = new HashMap<>();
+        String placeName = "-NA-";
+        String vicinity = "-NA-";
         String latitude = "";
         String longitude = "";
         String reference = "";
 
         try {
-        if(!object.isNull("name")){
+            if (!googlePlaceJson.isNull("name"))
+                placeName = googlePlaceJson.getString("name");
 
-                nameOfPlace = object.getString("name");
-            }
-        if(!object.isNull("vicinity")){
+            if (!googlePlaceJson.isNull("vicinity"))
+                vicinity = googlePlaceJson.getString("vicinity");
 
-                nameOfPlace = object.getString("vicinity");
-            }
+            latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
+            longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
 
-        latitude = object.getJSONObject("geometry").getJSONObject("location").getString("lat");
-        longitude = object.getJSONObject("geometry").getJSONObject("location").getString("lng");
+            reference = googlePlaceJson.getString("reference");
 
-        place.put("placeName",nameOfPlace);
-        place.put("vicicnity",vicinity);
-        place.put("lat",latitude);
-        place.put("lng",longitude);
-        place.put("reference",reference);
+            googlePlaceMap.put("place_name", placeName);
+            googlePlaceMap.put("vicinity", vicinity);
+            googlePlaceMap.put("lat", latitude);
+            googlePlaceMap.put("lng", longitude);
+            googlePlaceMap.put("reference", reference);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return place;
+        return googlePlaceMap;
     }
 
-    private List<HashMap<String ,String>> nearPlaces (JSONArray jsonArray){
-
+    private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
         int count = jsonArray.length();
+        List<HashMap<String, String>> placeList = new ArrayList<>();
+        HashMap<String, String> placeMap = null;
 
-        List<HashMap<String ,String >> listOfPlaces =new  ArrayList<>();
-
-        HashMap<String,String> Plcaes = null;
-
-        for (int i= 0; i<count;i++){
-
+        for (int i=0; i<count; i++) {
             try {
-                Plcaes = nearPlace((JSONObject) jsonArray.get(i));
-
+                placeMap = getPlace((JSONObject) jsonArray.get(i));
+                placeList.add(placeMap);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            listOfPlaces.add(Plcaes);
-
         }
-
-
-
-        return listOfPlaces;
+        return placeList;
     }
 
-    public  List<HashMap<String,String>> parse(String JsonData){
-        JSONArray ja = null;
+    public List<HashMap<String, String>> parse(String jsonData) {
+        JSONArray jsonArray = null;
+//        JSONObject jsonObject;
 
         try {
-            JSONObject jsonObject =new JSONObject(JsonData);
-            ja = jsonObject.getJSONArray("results");
-
+            JSONObject jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("results");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return nearPlaces(ja);
 
+        return getPlaces(jsonArray);
+    }
+
+    public HashMap<String, String> parseDistance(String jsonData) {
+        JSONArray jsonArray = null;
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return getDuration(jsonArray);
+    }
+
+    private HashMap<String, String> getDuration(JSONArray googleDirectionJson) {
+        HashMap<String, String> googleDirectionMap = new HashMap<>();
+        String duration = "";
+        String distance = "";
+
+        try {
+            duration = googleDirectionJson.getJSONObject(0).getJSONObject("duration").getString("text");
+            distance = googleDirectionJson.getJSONObject(0).getJSONObject("distance").getString("text");
+
+            googleDirectionMap.put("duration", duration);
+            googleDirectionMap.put("distance", distance);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return googleDirectionMap;
+    }
+
+    public String[] parseDirections(String jsonData) {
+        JSONArray jsonArray = null;
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return getPaths(jsonArray);
+    }
+
+    public String getPath(JSONObject googlePathJson) {
+        String polyLine = "";
+        try {
+            polyLine = googlePathJson.getJSONObject("polyline").getString("points");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return polyLine;
+    }
+
+    public String[] getPaths(JSONArray googleStepsJson) {
+        int count = googleStepsJson.length();
+        String[] polylines = new String[count];
+
+        for (int i=0; i<count; i++) {
+            try {
+                polylines[i] = getPath(googleStepsJson.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return polylines;
     }
 
 

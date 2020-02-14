@@ -10,44 +10,38 @@ import java.net.URL;
 
 public class FetchUrl {
 
-    public String ReadUrl(String url) throws IOException {
+    public String readUrl(String myUrl) throws IOException {
         String data = "";
-
-        HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
 
+        HttpURLConnection urlConnection  = null;
 
         try {
-            URL url1 = new URL(url);
-
-            urlConnection = (HttpURLConnection)  url1.openConnection();
+            URL url = new URL(myUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
+
             inputStream = urlConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             StringBuffer sb = new StringBuffer();
+            // we need to read line by line so we declare a line variable
+            String line = "";
+            while ((line = br.readLine()) != null)
+                sb.append(line);
 
-            String jsonLine = "";
-
-            while ((jsonLine = bufferedReader.readLine()) != null){
-                sb.append(jsonLine);
-            }
             data = sb.toString();
-            bufferedReader.close();
+            br.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             inputStream.close();
             urlConnection.disconnect();
         }
 
-        return  data;
-
-
+        return data;
     }
-
-
 
 
 

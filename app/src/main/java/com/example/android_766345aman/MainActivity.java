@@ -2,12 +2,14 @@ package com.example.android_766345aman;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +20,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +40,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -55,9 +59,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     DBofFavrtPlaces mDatabase;
     Geocoder  gcode;
     String address;
-    Location location;
+//    Location location;
     List<Address> addresses;
     Spinner maptype;
+    boolean onMarkerClick = false;
 
 
 
@@ -68,9 +73,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     // latitude, longitude
-    double latitude, longitude;
+//    double latitude, longitude;
     final int RADIUS = 1500;
-    double dest_lng, dest_lat;
+
+    LatLng customMarker;
+    LatLng currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +110,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     default:
 
                       break;
-
-
-
-
 
                 }
             }
@@ -153,13 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 for (Location location : locationResult.getLocations()) {
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-                    latitude = userLocation.latitude;
-                    longitude = userLocation.longitude;
-
-
-
-
-
+                    currentLocation = userLocation;
 
                     CameraPosition cameraPosition = CameraPosition.builder()
                             .target(userLocation)
@@ -210,54 +207,92 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-       // mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        // mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+/*
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public void onMapLongClick(LatLng latLng) {
-                location = new Location("your destination");
-                location.setLatitude(latLng.latitude);
-                location.setLongitude(latLng.longitude);
+            public boolean onMarkerClick(Marker marker) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Do you want to add the place in Favourites");
+                builder.setCancelable(true);
 
-                dest_lat = latLng.latitude;
-                dest_lng = latLng.longitude;
 
-                setMarker(location);
-                addressOfPlaces(location);
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                        onMarkerClick = true;
+                        addressOfPlaces(customMarker);
+
+
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        onMarkerClick = false;
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
             }
         });
 
+ */
 
+
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+//                location = new Location("your destination");
+//                location.setLatitude(latLng.latitude);
+//                location.setLongitude(latLng.longitude);
+
+//                dest_lat = latLng.latitude;
+//                dest_lng = latLng.longitude;
+
+                customMarker = latLng;
+                setMarker(latLng);
+
+
+                addressOfPlaces(customMarker);
+            }
+        });
 
     }
 
 
-    private void setMarker(Location location){
-        LatLng userLatlng = new LatLng(location.getLatitude(),location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions().position(userLatlng).title("your Destination")
-                .snippet("you are going there").draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+
+
+
+    private void setMarker(LatLng latLng){
+//        LatLng userLatlng = new LatLng(location.getLatitude(),location.getLongitude());
+
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("your Destination")
+                .snippet("you are going there").draggable(false).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mMap.addMarker(markerOptions);
 
 
-
-
-
     }
 
 
-    private void addressOfPlaces(Location location){
+    private void addressOfPlaces(LatLng latLng){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         String addDate = simpleDateFormat.format(calendar.getTime());
         gcode = new Geocoder(this, Locale.getDefault());
         try{
-               addresses = gcode.getFromLocation(location.getLatitude(), location.getLongitude(),1);
+               addresses = gcode.getFromLocation(latLng.latitude, latLng.longitude,1);
                if(!addresses.isEmpty()){
                    address = addresses.get(0).getLocality() + " " + addresses.get(0).getAddressLine(0);
                    System.out.println(addresses.get(0).getAddressLine(0));
 
 
-                   if (mDatabase.addFavrtPlaces(addresses.get(0).getLocality(),addDate,addresses.get(0).getAddressLine(0),location.getLatitude(),location.getLongitude())){
+                   if (mDatabase.addFavrtPlaces(addresses.get(0).getLocality(),addDate,addresses.get(0).getAddressLine(0),latLng.latitude,latLng.longitude)){
 
                        Toast.makeText(MainActivity.this, "places:"+addresses.get(0).getAddressLine(0), Toast.LENGTH_SHORT).show();
                    }else {
@@ -289,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (view.getId()) {
             case R.id.btn_restaurant:
                 // get the url from place api
-                url = getUrl(latitude, longitude, "restaurant");
+                url = getUrl(currentLocation.latitude, currentLocation.longitude,"restaurant");
 
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
@@ -299,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
 
             case R.id.btn_museum:
-                url = getUrl(latitude, longitude, "museum");
+                url = getUrl(currentLocation.latitude, currentLocation.longitude, "museum");
 
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
@@ -307,6 +342,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getNearbyPlaceData.execute(dataTransfer);
                 Toast.makeText(this, "Museum", Toast.LENGTH_SHORT).show();
                 break;
+
+
+
+            case R.id.btn_direction:
+                dataTransfer = new Object[4];
+                url = getDirectionUrl();
+                dataTransfer[0] = mMap;
+                dataTransfer[1] = url;
+                dataTransfer[2] = customMarker;
+                dataTransfer[3] = new LatLng(currentLocation.latitude,currentLocation.longitude);
+                FetchDirectionData getDirectionsData = new FetchDirectionData();
+                // execute asynchronously
+                getDirectionsData.execute(dataTransfer);
+                break;
+
 
 
                 case R.id.btn_cafe:
@@ -329,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                // break;
 
 
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
 
 
@@ -337,16 +388,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private String getDirectionUrl() {
-
-        StringBuilder directionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-        directionUrl.append("origin="+ latitude+","+longitude);
-        directionUrl.append("&destination="+dest_lat+","+dest_lng);
-        directionUrl.append("&key=AIzaSyB45lwuNXNnXYsc3WHA1QyJKIkxqE-Rb7A");
-
-        return directionUrl.toString();
-
-
+        StringBuilder googleDirectionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+        googleDirectionUrl.append("origin="+currentLocation.latitude+","+currentLocation.longitude);
+        googleDirectionUrl.append("&destination="+customMarker.latitude+","+customMarker.longitude);
+        googleDirectionUrl.append("&key="+getString(R.string.api_key_places));
+        Log.d("", "getDirectionUrl: "+googleDirectionUrl);
+        return googleDirectionUrl.toString();
     }
+
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
         StringBuilder placeUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
