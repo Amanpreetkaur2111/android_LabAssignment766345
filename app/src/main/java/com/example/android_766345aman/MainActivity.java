@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -61,9 +62,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String address;
 //    Location location;
     List<Address> addresses;
+    List<Location> points;
     Spinner maptype;
     boolean onMarkerClick = false;
-
+double  dest_lat,dest_lng,lat,lng;
+ boolean isClicked = false;
 
 
     // get user location
@@ -79,12 +82,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     LatLng customMarker;
     LatLng currentLocation;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initMap();
         getUserLocation();
+
+      Intent intent = getIntent();
+
+        points = new ArrayList<>();
         maptype = findViewById(R.id.choosethemap);
 
         maptype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -214,23 +223,75 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+  mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
 
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("You want this marker as Source or Destination?");
+        builder.setCancelable(true);
+
+
+        builder.setPositiveButton("SOURCE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                currentLocation = marker.getPosition();
+                onMarkerClick = true;
+
+                //addressOfFavouritePlaces(customMarker);
+
+
+            }
+        });
+        builder.setNegativeButton("DESTINATION", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                dialog.cancel();
+                customMarker = marker.getPosition();
+                onMarkerClick = false;
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        return true;
+    }
+  });
+
+//
+//        return false;
+//    }
+//});
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-//                location = new Location("your destination");
-//                location.setLatitude(latLng.latitude);
-//                location.setLongitude(latLng.longitude);
 
-//                dest_lat = latLng.latitude;
-//                dest_lng = latLng.longitude;
+//                if(points.size() == 2){
+//                    mMap.clear();
+//                    points.clear();
+//                }
+              Location location = new Location("your destination");
+                location.setLatitude(latLng.latitude);
+                location.setLongitude(latLng.longitude);
+
+
 
                 customMarker = latLng;
+                dest_lat = customMarker.latitude;
+                dest_lng = customMarker.longitude;
+                points.add(location);
                 setMarker(latLng);
 
 
@@ -239,6 +300,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
+
+
 
 
 
@@ -322,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             case R.id.btn_direction:
                 dataTransfer = new Object[4];
+
                 url = getDirectionUrl();
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
@@ -346,6 +410,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
             break;
+
+            case R.id.btn_clear:
+                mMap.clear();
+
 
             case R.id.btn_addfavrt:
                 Intent intent2 = new Intent(this,AddActivity.class);

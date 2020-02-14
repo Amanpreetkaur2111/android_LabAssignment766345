@@ -6,12 +6,13 @@ int id ;
  String address,nameoffavrtplace,date;
  Double latitude,longitude;
 
-    public ClassOfPlaces( String nameoffavrtplace,String date,String address,Double longitude,Double latitude) {
+    public ClassOfPlaces( int id, String nameoffavrtplace,String date,String address,Double longitude,Double latitude) {
         this.nameoffavrtplace = nameoffavrtplace;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
+        this.id = id;
     }
 
     public int getId() {

@@ -57,18 +57,18 @@ public class PlacesAdaptor extends ArrayAdapter {
         //tvlongitude.setText(list.getLongitude());
         tvdate.setText(addDate);
 
-        view.findViewById(R.id.btn_edit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        view.findViewById(R.id.btn_delete).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+//        view.findViewById(R.id.btn_edit).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+//        view.findViewById(R.id.btn_delete).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
 
         return view;

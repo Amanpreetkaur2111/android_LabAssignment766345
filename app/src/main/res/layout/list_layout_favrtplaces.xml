@@ -49,24 +49,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#888b77"
-            android:text="Update"
-            android:textColor="#ECF7F2" />
-
-        <Button
-            android:id="@+id/btn_delete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#373f1a"
-            android:text="Delete"
-            android:textColor="#ECF7F2"/>
-
 
 
      </LinearLayout>
