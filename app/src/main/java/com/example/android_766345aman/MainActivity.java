@@ -91,7 +91,7 @@ double  dest_lat,dest_lng,lat,lng;
         initMap();
         getUserLocation();
 
-      Intent intent = getIntent();
+      //Intent intent = getIntent();
 
         points = new ArrayList<>();
         maptype = findViewById(R.id.choosethemap);
@@ -413,6 +413,7 @@ double  dest_lat,dest_lng,lat,lng;
 
             case R.id.btn_clear:
                 mMap.clear();
+                break;
 
 
             case R.id.btn_addfavrt:

@@ -42,12 +42,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class AddActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class AddActivity extends AppCompatActivity implements OnMapReadyCallback, Serializable {
 
 
     GoogleMap mMap;
@@ -69,6 +70,12 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
     LocationRequest locationRequest;
      Double  dest_lat,dest_lng;
 
+     int id;
+     Double lat,logi;
+
+
+
+
     // latitude, longitude
 //    double latitude, longitude;
     final int RADIUS = 1500;
@@ -83,6 +90,14 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
         initMap();
         getUserLocation();
         setHomeMarker();
+
+//        Intent intent = getIntent();
+//        id = intent.getIntExtra("id",-1);
+//       lat = intent.getDoubleExtra("lat",0);
+//       logi = intent.getDoubleExtra("lng",1);
+//        Toast.makeText(AddActivity.this, "lat"+lat+"long"+logi, Toast.LENGTH_SHORT).show();
+//        startActivity(intent);
+
 
         mDatabase = new DBofFavrtPlaces(this);
 
@@ -174,6 +189,16 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         // mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+//
+//        System.out.println(id);
+//        if (id !=  1){
+//
+//          LatLng userlatlng = new LatLng(lat,logi);
+//          MarkerOptions markerOptions = new MarkerOptions().position(userlatlng).title("your location").draggable(true);
+//          mMap.addMarker(markerOptions);
+//
+//
+//        }
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -186,7 +211,7 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        dialog.cancel();
                         onMarkerClick = true;
 
                         addressOfFavouritePlaces(customMarker);
@@ -240,7 +265,7 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
 //        LatLng userLatlng = new LatLng(location.getLatitude(),location.getLongitude());
 
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(address)
-                .snippet("you are going there").draggable(false).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                .snippet("you are going there").draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mMap.addMarker(markerOptions);
 
 

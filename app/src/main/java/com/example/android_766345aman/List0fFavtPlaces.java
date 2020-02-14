@@ -15,10 +15,11 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class List0fFavtPlaces extends AppCompatActivity {
+public class List0fFavtPlaces extends AppCompatActivity implements Serializable {
 
     DBofFavrtPlaces mDatabase;
     List<ClassOfPlaces> listPlace;
@@ -83,12 +84,14 @@ public class List0fFavtPlaces extends AppCompatActivity {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case 0:
-                       Intent intent = new Intent(List0fFavtPlaces.this,MainActivity.class);
+                       Intent intent = new Intent(List0fFavtPlaces.this,AddActivity.class);
                        intent.putExtra("id",listPlace.get(position).id);
-                        intent.putExtra("lat",listPlace.get(position).latitude);
-                        intent.putExtra("lng",listPlace.get(position).longitude);
+                        intent.putExtra("lat",listPlace.get(position).longitude);
+                        intent.putExtra("lng",listPlace.get(position).latitude);
                        intent.putExtra("edit",true);
-                       startActivity(intent);
+                      // Toast.makeText(List0fFavtPlaces.this, "lat:"+listPlace.get(position).longitude, Toast.LENGTH_SHORT).show();
+
+                        startActivity(intent);
 
                         break;
                     case 1:
