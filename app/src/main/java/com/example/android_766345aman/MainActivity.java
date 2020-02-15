@@ -156,6 +156,7 @@ double  dest_lat,dest_lng,lat,lng;
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     private void getUserLocation() {
@@ -431,7 +432,7 @@ double  dest_lat,dest_lng,lat,lng;
         StringBuilder googleDirectionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionUrl.append("origin="+currentLocation.latitude+","+currentLocation.longitude);
         googleDirectionUrl.append("&destination="+customMarker.latitude+","+customMarker.longitude);
-        googleDirectionUrl.append("&key="+getString(R.string.api_key_places));
+        googleDirectionUrl.append("&key=AIzaSyBQOhueB792SnXFS0ZvfrKg6U5Nyd8Jd_0");
         Log.d("", "getDirectionUrl: "+googleDirectionUrl);
         return googleDirectionUrl.toString();
     }
@@ -442,7 +443,7 @@ double  dest_lat,dest_lng,lat,lng;
         placeUrl.append("location="+latitude+","+longitude);
         placeUrl.append("&radius="+RADIUS);
         placeUrl.append("&type="+nearbyPlace);
-        placeUrl.append("&key=AIzaSyB45lwuNXNnXYsc3WHA1QyJKIkxqE-Rb7A");
+        placeUrl.append("&key=AIzaSyBQOhueB792SnXFS0ZvfrKg6U5Nyd8Jd_0");
         System.out.println(placeUrl.toString());
         return placeUrl.toString();
     }
